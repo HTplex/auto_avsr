@@ -52,9 +52,19 @@ class AVDataset(torch.utils.data.Dataset):
 
     def load_list(self, label_path):
         paths_counts_labels = []
+        short_clip_count = 0
+        normal_clip_count = 0
         for path_count_label in open(label_path).read().splitlines():
-            dataset_name, rel_path, input_length, token_id = path_count_label.split(",")
-            paths_counts_labels.append((dataset_name, rel_path, int(input_length), torch.tensor([int(_) for _ in token_id.split()])))
+            dataset_name, rel_path, input_length, token_id_str = path_count_label.split(",")
+            input_length = int(input_length)
+            if input_length < 12:
+                # Skip short clips
+                short_clip_count += 1
+                continue
+            normal_clip_count += 1
+            token_id = torch.tensor([int(_) for _ in token_id_str.split()])
+            paths_counts_labels.append((dataset_name, rel_path, input_length, token_id))
+        # print("short clips: ", short_clip_count, "normal clips: ", normal_clip_count)
         return paths_counts_labels
 
     def __getitem__(self, idx):
@@ -62,7 +72,10 @@ class AVDataset(torch.utils.data.Dataset):
         path = os.path.join(self.root_dir, dataset_name, rel_path)
         if self.modality == "video":
             video = load_video(path)
+            # print(path)
+            # print("video shape: ", video.shape)
             video = self.video_transform(video)
+            # print("video shape after transform: ", video.shape)
             return {"input": video, "target": token_id}
         elif self.modality == "audio":
             audio = load_audio(path)

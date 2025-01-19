@@ -1,0 +1,24 @@
+2025-01-20 04:54:09,673 INFO    MainThread:3907068 [wandb_setup.py:_flush():68] Current SDK version is 0.19.4
+2025-01-20 04:54:09,673 INFO    MainThread:3907068 [wandb_setup.py:_flush():68] Configure stats pid to 3907068
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_setup.py:_flush():68] Loading settings from /home/agent_h/.config/wandb/settings
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_setup.py:_flush():68] Loading settings from /home/agent_h/dev/auto_avsr/wandb/settings
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_setup.py:_flush():68] Loading settings from environment variables
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_init.py:setup_run_log_directory():624] Logging user logs to ./wandb/run-20250120_045409-o0b0cq8s/logs/debug.log
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_init.py:setup_run_log_directory():625] Logging internal logs to ./wandb/run-20250120_045409-o0b0cq8s/logs/debug-internal.log
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_init.py:init():743] calling init triggers
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_init.py:init():748] wandb.init called with sweep_config: {}
+config: {}
+2025-01-20 04:54:09,674 INFO    MainThread:3907068 [wandb_init.py:init():776] starting backend
+2025-01-20 04:54:09,884 INFO    MainThread:3907068 [wandb_init.py:init():780] sending inform_init request
+2025-01-20 04:54:09,890 INFO    MainThread:3907068 [backend.py:_multiprocessing_setup():97] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-01-20 04:54:09,891 INFO    MainThread:3907068 [wandb_init.py:init():795] backend started and connected
+2025-01-20 04:54:09,893 INFO    MainThread:3907068 [wandb_init.py:init():888] updated telemetry
+2025-01-20 04:54:09,900 INFO    MainThread:3907068 [wandb_init.py:init():915] communicating run to backend with 90.0 second timeout
+2025-01-20 04:54:10,967 INFO    MainThread:3907068 [wandb_init.py:init():967] starting run threads in backend
+2025-01-20 04:54:11,043 INFO    MainThread:3907068 [wandb_run.py:_console_start():2409] atexit reg
+2025-01-20 04:54:11,043 INFO    MainThread:3907068 [wandb_run.py:_redirect():2259] redirect: wrap_raw
+2025-01-20 04:54:11,043 INFO    MainThread:3907068 [wandb_run.py:_redirect():2324] Wrapping output streams.
+2025-01-20 04:54:11,043 INFO    MainThread:3907068 [wandb_run.py:_redirect():2349] Redirects installed.
+2025-01-20 04:54:11,044 INFO    MainThread:3907068 [wandb_init.py:init():1009] run started, returning control to user process
+2025-01-20 04:54:12,525 INFO    MainThread:3907068 [wandb_run.py:_config_callback():1270] config_cb None None {'exp_dir': '/home/agent_h/data/ckpts/', 'exp_name': '0201_0119_autoavsr_lrs3v0', 'group_name': None, 'modality': 'video', 'root_dir': '/home/agent_h/data/datasets/autoavsr_lrs3_train/', 'train_file': '/home/agent_h/data/datasets/autoavsr_lrs3_train/labels/lrs3_train_transcript_lengths_seg16s.csv', 'val_file': '/home/agent_h/data/datasets/autoavsr_lrs3_test/labels/lrs3_test_transcript_lengths_seg16s.csv', 'test_file': '/home/agent_h/data/datasets/autoavsr_lrs3_test/labels/lrs3_test_transcript_lengths_seg16s.csv', 'num_nodes': 1, 'gpus': 8, 'pretrained_model_path': None, 'transfer_frontend': False, 'transfer_encoder': False, 'warmup_epochs': 5, 'max_epochs': 75, 'max_frames': 1600, 'lr': 0.001, 'weight_decay': 0.03, 'ctc_weight': 0.1, 'train_num_buckets': 400, 'ckpt_path': None, 'slurm_job_id': 0, 'debug': False}
+2025-01-20 04:54:13,772 WARNING MsgRouterThr:3907068 [router.py:message_loop():75] message_loop has been closed

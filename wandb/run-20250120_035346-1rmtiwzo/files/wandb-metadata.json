@@ -1,0 +1,94 @@
+{
+  "os": "Linux-5.4.0-144-generic-x86_64-with-glibc2.31",
+  "python": "CPython 3.10.16",
+  "startedAt": "2025-01-19T19:53:47.126915Z",
+  "args": [
+    "--exp-dir=/home/agent_h/data/ckpts/",
+    "--exp-name=0201_0119_autoavsr_lrs3v0",
+    "--modality=video",
+    "--root-dir=/home/agent_h/data/datasets/autoavsr_lrs3_train/",
+    "--train-file=/home/agent_h/data/datasets/autoavsr_lrs3_train/labels/lrs3_train_transcript_lengths_seg16s.csv",
+    "--val-file=/home/agent_h/data/datasets/autoavsr_lrs3_test/labels/lrs3_test_transcript_lengths_seg16s.csv",
+    "--test-file=/home/agent_h/data/datasets/autoavsr_lrs3_test/labels/lrs3_test_transcript_lengths_seg16s.csv",
+    "--num-nodes=1"
+  ],
+  "program": "/home/agent_h/dev/auto_avsr/train.py",
+  "codePath": "train.py",
+  "git": {
+    "remote": "git@github.com:HTplex/auto_avsr.git",
+    "commit": "182b62837773ab01052d4ac21ef1d2203ea7d267"
+  },
+  "email": "htplex@gmail.com",
+  "root": ".",
+  "host": "ly-node-214-23-73-5",
+  "executable": "/home/agent_h/miniconda3/envs/autoavsr/bin/python",
+  "codePathLocal": "train.py",
+  "cpu_count": 64,
+  "cpu_count_logical": 128,
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "gpu_count": 8,
+  "disk": {
+    "/": {
+      "total": "943282049024",
+      "used": "605741703168"
+    }
+  },
+  "memory": {
+    "total": "2164168228864"
+  },
+  "cpu": {
+    "count": 64,
+    "countLogical": 128
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    },
+    {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere"
+    }
+  ],
+  "cudaVersion": "12.4"
+}

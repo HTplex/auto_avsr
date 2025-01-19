@@ -94,6 +94,7 @@ class ModelModule(LightningModule):
         return loss
 
     def _step(self, batch, batch_idx, step_type):
+        # print(batch["inputs"].shape)
         loss, loss_ctc, loss_att, acc = self.model(batch["inputs"], batch["input_lengths"], batch["targets"])
         batch_size = len(batch["inputs"])
 

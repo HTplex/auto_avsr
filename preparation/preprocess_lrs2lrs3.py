@@ -55,7 +55,6 @@ parser.add_argument(
 parser.add_argument(
     "--gpu_type",
     type=str,
-    required=True,
     default="cuda",
     help="GPU type, either mps or cuda. (Default: cuda)",
 )
@@ -91,8 +90,7 @@ text_transform = TextTransform()
 
 # Load Data
 args.data_dir = os.path.normpath(args.data_dir)
-if args.gpu_type != "cuda" or "mps":
-    raise ValueError("Invalid GPU type. Valid values for gpu_type are \"cuda\" and \"mps\". ")
+print(args.gpu_type)
 vid_dataloader = AVSRDataLoader(
     modality="video", detector=args.detector, convert_gray=False, gpu_type=args.gpu_type
 )

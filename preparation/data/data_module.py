@@ -7,6 +7,8 @@
 import torch
 import torchaudio
 import torchvision
+import librosa
+
 
 
 class AVSRDataLoader:
@@ -43,7 +45,10 @@ class AVSRDataLoader:
             return video
 
     def load_audio(self, data_filename):
-        waveform, sample_rate = torchaudio.load(data_filename, normalize=True)
+        data, sample_rate = librosa.load(data_filename, sr=16000, mono=True)
+        waveform = torch.from_numpy(data).unsqueeze(0)
+        # old one
+        # waveform, sample_rate = torchaudio.load(data_filename, normalize=True)
         return waveform, sample_rate
 
     def load_video(self, data_filename):

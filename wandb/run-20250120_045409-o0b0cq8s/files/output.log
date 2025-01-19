@@ -1,0 +1,169 @@
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3,4,5,6,7]
+short clips:  0 normal clips:  1522
+/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+
+  | Name  | Type | Params | Mode
+---------------------------------------
+0 | model | E2E  | 250 M  | train
+---------------------------------------
+250 M     Trainable params
+0         Non-trainable params
+250 M     Total params
+1,001.534 Total estimated model params size (MB)
+561       Modules in train mode
+0         Modules in eval mode
+Sanity Checking: |                                                                                | 0/? [00:00<?, ?it/s]short clips:  0 normal clips:  1321
+Sanity Checking DataLoader 0:   0%|                                                               | 0/2 [00:00<?, ?it/s]torch.Size([7, 0, 1, 88, 88])
+Traceback (most recent call last):
+  File "/home/agent_h/dev/auto_avsr/train.py", line 210, in <module>
+    cli_main()
+  File "/home/agent_h/dev/auto_avsr/train.py", line 205, in cli_main
+    trainer.fit(model=modelmodule, datamodule=datamodule, ckpt_path=args.ckpt_path)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 539, in fit
+    call._call_and_handle_interrupt(
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 46, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+    return function(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 575, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 982, in _run
+    results = self._run_stage()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1024, in _run_stage
+    self._run_sanity_check()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1053, in _run_sanity_check
+    val_loop.run()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 144, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 433, in _evaluation_step
+    output = call._call_strategy_hook(trainer, hook_name, *step_args)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 323, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 411, in validation_step
+    return self._forward_redirection(self.model, self.lightning_module, "validation_step", *args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 641, in __call__
+    wrapper_output = wrapper_module(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1643, in forward
+    else self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1459, in _run_ddp_forward
+    return self.module(*inputs, **kwargs)  # type: ignore[index]
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 634, in wrapped_forward
+    out = method(*_args, **_kwargs)
+  File "/home/agent_h/dev/auto_avsr/lightning.py", line 67, in validation_step
+    return self._step(batch, batch_idx, step_type="val")
+  File "/home/agent_h/dev/auto_avsr/lightning.py", line 98, in _step
+    loss, loss_ctc, loss_att, acc = self.model(batch["inputs"], batch["input_lengths"], batch["targets"])
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/agent_h/dev/auto_avsr/espnet/nets/pytorch_backend/e2e_asr_conformer.py", line 69, in forward
+    x = self.frontend(x)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/agent_h/dev/auto_avsr/espnet/nets/pytorch_backend/frontend/resnet.py", line 228, in forward
+    xs_pad = self.frontend3D(xs_pad)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/container.py", line 250, in forward
+    input = module(input)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 725, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 720, in _conv_forward
+    return F.conv3d(
+RuntimeError: Calculated padded input size per channel: (4 x 94 x 94). Kernel size: (5 x 7 x 7). Kernel size can't be greater than actual input size
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/agent_h/dev/auto_avsr/train.py", line 210, in <module>
+[rank0]:     cli_main()
+[rank0]:   File "/home/agent_h/dev/auto_avsr/train.py", line 205, in cli_main
+[rank0]:     trainer.fit(model=modelmodule, datamodule=datamodule, ckpt_path=args.ckpt_path)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 539, in fit
+[rank0]:     call._call_and_handle_interrupt(
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 46, in _call_and_handle_interrupt
+[rank0]:     return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+[rank0]:     return function(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 575, in _fit_impl
+[rank0]:     self._run(model, ckpt_path=ckpt_path)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 982, in _run
+[rank0]:     results = self._run_stage()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1024, in _run_stage
+[rank0]:     self._run_sanity_check()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1053, in _run_sanity_check
+[rank0]:     val_loop.run()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 179, in _decorator
+[rank0]:     return loop_run(self, *args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 144, in run
+[rank0]:     self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 433, in _evaluation_step
+[rank0]:     output = call._call_strategy_hook(trainer, hook_name, *step_args)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 323, in _call_strategy_hook
+[rank0]:     output = fn(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 411, in validation_step
+[rank0]:     return self._forward_redirection(self.model, self.lightning_module, "validation_step", *args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 641, in __call__
+[rank0]:     wrapper_output = wrapper_module(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1643, in forward
+[rank0]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1459, in _run_ddp_forward
+[rank0]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 634, in wrapped_forward
+[rank0]:     out = method(*_args, **_kwargs)
+[rank0]:   File "/home/agent_h/dev/auto_avsr/lightning.py", line 67, in validation_step
+[rank0]:     return self._step(batch, batch_idx, step_type="val")
+[rank0]:   File "/home/agent_h/dev/auto_avsr/lightning.py", line 98, in _step
+[rank0]:     loss, loss_ctc, loss_att, acc = self.model(batch["inputs"], batch["input_lengths"], batch["targets"])
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/agent_h/dev/auto_avsr/espnet/nets/pytorch_backend/e2e_asr_conformer.py", line 69, in forward
+[rank0]:     x = self.frontend(x)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/agent_h/dev/auto_avsr/espnet/nets/pytorch_backend/frontend/resnet.py", line 228, in forward
+[rank0]:     xs_pad = self.frontend3D(xs_pad)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/container.py", line 250, in forward
+[rank0]:     input = module(input)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 725, in forward
+[rank0]:     return self._conv_forward(input, self.weight, self.bias)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 720, in _conv_forward
+[rank0]:     return F.conv3d(
+[rank0]: RuntimeError: Calculated padded input size per channel: (4 x 94 x 94). Kernel size: (5 x 7 x 7). Kernel size can't be greater than actual input size

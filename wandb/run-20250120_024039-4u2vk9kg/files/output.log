@@ -1,0 +1,91 @@
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3,4,5,6,7]
+/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+
+  | Name  | Type | Params | Mode
+---------------------------------------
+0 | model | E2E  | 250 M  | train
+---------------------------------------
+250 M     Trainable params
+0         Non-trainable params
+250 M     Total params
+1,001.534 Total estimated model params size (MB)
+561       Modules in train mode
+0         Modules in eval mode
+Sanity Checking: |                                                                                                                                            | 0/? [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/agent_h/dev/auto_avsr/train.py", line 210, in <module>
+    cli_main()
+  File "/home/agent_h/dev/auto_avsr/train.py", line 205, in cli_main
+    trainer.fit(model=modelmodule, datamodule=datamodule, ckpt_path=args.ckpt_path)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 539, in fit
+    call._call_and_handle_interrupt(
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 46, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+    return function(*args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 575, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 982, in _run
+    results = self._run_stage()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1024, in _run_stage
+    self._run_sanity_check()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1053, in _run_sanity_check
+    val_loop.run()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 119, in run
+    self.setup_data()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 175, in setup_data
+    dataloaders = _request_dataloader(source)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py", line 326, in _request_dataloader
+    return data_source.dataloader()
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py", line 293, in dataloader
+    return call._call_lightning_datamodule_hook(self.instance.trainer, self.name)
+  File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 193, in _call_lightning_datamodule_hook
+    return fn(*args, **kwargs)
+  File "/home/agent_h/dev/auto_avsr/datamodule/data_module.py", line 151, in val_dataloader
+    dataset = AVDataset(
+  File "/home/agent_h/dev/auto_avsr/datamodule/av_dataset.py", line 47, in __init__
+    self.list = self.load_list(label_path)
+  File "/home/agent_h/dev/auto_avsr/datamodule/av_dataset.py", line 55, in load_list
+    for path_count_label in open(label_path).read().splitlines():
+FileNotFoundError: [Errno 2] No such file or directory: '/home/agent_h/data/datasets/autoavsr_lrs3_train/labels/lrs3_test_transcript_lengths_seg16s.csv'
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/agent_h/dev/auto_avsr/train.py", line 210, in <module>
+[rank0]:     cli_main()
+[rank0]:   File "/home/agent_h/dev/auto_avsr/train.py", line 205, in cli_main
+[rank0]:     trainer.fit(model=modelmodule, datamodule=datamodule, ckpt_path=args.ckpt_path)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 539, in fit
+[rank0]:     call._call_and_handle_interrupt(
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 46, in _call_and_handle_interrupt
+[rank0]:     return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+[rank0]:     return function(*args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 575, in _fit_impl
+[rank0]:     self._run(model, ckpt_path=ckpt_path)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 982, in _run
+[rank0]:     results = self._run_stage()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1024, in _run_stage
+[rank0]:     self._run_sanity_check()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1053, in _run_sanity_check
+[rank0]:     val_loop.run()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 179, in _decorator
+[rank0]:     return loop_run(self, *args, **kwargs)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 119, in run
+[rank0]:     self.setup_data()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 175, in setup_data
+[rank0]:     dataloaders = _request_dataloader(source)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py", line 326, in _request_dataloader
+[rank0]:     return data_source.dataloader()
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py", line 293, in dataloader
+[rank0]:     return call._call_lightning_datamodule_hook(self.instance.trainer, self.name)
+[rank0]:   File "/home/agent_h/miniconda3/envs/autoavsr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 193, in _call_lightning_datamodule_hook
+[rank0]:     return fn(*args, **kwargs)
+[rank0]:   File "/home/agent_h/dev/auto_avsr/datamodule/data_module.py", line 151, in val_dataloader
+[rank0]:     dataset = AVDataset(
+[rank0]:   File "/home/agent_h/dev/auto_avsr/datamodule/av_dataset.py", line 47, in __init__
+[rank0]:     self.list = self.load_list(label_path)
+[rank0]:   File "/home/agent_h/dev/auto_avsr/datamodule/av_dataset.py", line 55, in load_list
+[rank0]:     for path_count_label in open(label_path).read().splitlines():
+[rank0]: FileNotFoundError: [Errno 2] No such file or directory: '/home/agent_h/data/datasets/autoavsr_lrs3_train/labels/lrs3_test_transcript_lengths_seg16s.csv'

@@ -199,7 +199,6 @@ def init_logger(debug):
 def cli_main():
     args = parse_args()
     #init_logger(args.debug)
-    args.slurm_job_id = os.environ["SLURM_JOB_ID"]
     modelmodule = get_lightning_module(args)
     datamodule = DataModule(args, train_num_buckets=args.train_num_buckets)
     trainer = get_trainer(args)

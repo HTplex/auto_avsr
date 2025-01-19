@@ -1,0 +1,15 @@
+{"time":"2025-01-20T04:55:23.120646783+08:00","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"wandb/run-20250120_045522-rar5oava/logs/debug-core.log"}
+{"time":"2025-01-20T04:55:23.243305666+08:00","level":"INFO","msg":"created new stream","id":"rar5oava"}
+{"time":"2025-01-20T04:55:23.243397296+08:00","level":"INFO","msg":"stream: started","id":"rar5oava"}
+{"time":"2025-01-20T04:55:23.243404435+08:00","level":"INFO","msg":"handler: started","stream_id":"rar5oava"}
+{"time":"2025-01-20T04:55:23.243443782+08:00","level":"INFO","msg":"writer: Do: started","stream_id":"rar5oava"}
+{"time":"2025-01-20T04:55:23.243440576+08:00","level":"INFO","msg":"sender: started","stream_id":"rar5oava"}
+{"time":"2025-01-20T04:55:24.258373699+08:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-01-20T04:55:26.572131397+08:00","level":"INFO","msg":"stream: closing","id":"rar5oava"}
+{"time":"2025-01-20T04:55:26.57216635+08:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-01-20T04:55:26.573070492+08:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-01-20T04:55:27.474011794+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-01-20T04:55:28.489748318+08:00","level":"INFO","msg":"handler: closed","stream_id":"rar5oava"}
+{"time":"2025-01-20T04:55:28.489796852+08:00","level":"INFO","msg":"writer: Close: closed","stream_id":"rar5oava"}
+{"time":"2025-01-20T04:55:28.489829271+08:00","level":"INFO","msg":"sender: closed","stream_id":"rar5oava"}
+{"time":"2025-01-20T04:55:28.489968741+08:00","level":"INFO","msg":"stream: closed","id":"rar5oava"}
