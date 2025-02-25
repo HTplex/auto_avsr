@@ -74,6 +74,7 @@ class CustomBucketDataset(torch.utils.data.Dataset):
 
         max_length = max(lengths)
         min_length = min(lengths)
+        max_frames = int(max_frames*1.5)
 
         assert max_frames >= max_length
 

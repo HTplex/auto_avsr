@@ -74,6 +74,7 @@ def cli_main():
     args = parse_args()
     init_logger(args.debug)
     modelmodule = get_lightning_module(args)
+    print(modelmodule)
     datamodule = DataModule(args)
     trainer = get_trainer(args)
     trainer.test(model=modelmodule, datamodule=datamodule)

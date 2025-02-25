@@ -18,7 +18,7 @@ def get_trainer(args):
     seed_everything(42, workers=True)
     checkpoint = ModelCheckpoint(
         dirpath=os.path.join(args.exp_dir, args.exp_name) if args.exp_dir else None,
-        monitor="monitoring_step",
+        monitor="decoder_acc_val",
         mode="max",
         save_last=True,
         filename="{epoch}",

@@ -90,7 +90,6 @@ text_transform = TextTransform()
 
 # Load Data
 args.data_dir = os.path.normpath(args.data_dir)
-print(args.gpu_type)
 vid_dataloader = AVSRDataLoader(
     modality="video", detector=args.detector, convert_gray=False, gpu_type=args.gpu_type
 )

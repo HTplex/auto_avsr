@@ -21,6 +21,7 @@ By using this repository, you can achieve a word error rate (WER) of 20.3% for v
 ```Shell
 pip install torch torchvision torchaudio pytorch-lightning sentencepiece av 
 pip install wandb
+pip install decord
 ```
 
 2. Prepare the dataset. Please refer to [preparation](./preparation).

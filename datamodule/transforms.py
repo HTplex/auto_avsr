@@ -88,6 +88,13 @@ class AddNoise(torch.nn.Module):
 
 class VideoTransform:
     def __init__(self, subset):
+        # self.video_pipeline = torch.nn.Sequential(
+        #     FunctionalModule(lambda x: x / 255.0),
+        #     torchvision.transforms.RandomCrop(88),
+        #     torchvision.transforms.Grayscale(),
+        #     AdaptiveTimeMask(10, 25),
+        #     torchvision.transforms.Normalize(0.421, 0.165),
+        # )
         if subset == "train":
             self.video_pipeline = torch.nn.Sequential(
                 FunctionalModule(lambda x: x / 255.0),

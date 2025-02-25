@@ -34,3 +34,12 @@ def ensemble(args):
     model_path = os.path.join(args.exp_dir, args.exp_name, f"model_avg_10.pth")
     torch.save(average_checkpoints(last), model_path)
     return model_path
+
+
+
+if __name__ == "__main__":
+    torch.save(average_checkpoints([
+        "/home/agent_h/data/ckpts/0204_0217_autoavsr_cnv2/epoch=65.ckpt"]),
+        "/home/agent_h/data/ckpts/0204_0217_autoavsr_cnv2/epoch=65.pth")
+
+

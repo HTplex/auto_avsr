@@ -81,6 +81,10 @@ class ModelModule(LightningModule):
 
         self.total_edit_distance += compute_word_level_distance(actual, predicted)
         self.total_length += len(actual.split())
+        print(sample.keys())
+        print(actual)
+        print(predicted)
+        print(compute_word_level_distance(actual, predicted)/len(actual.split(" ")))
         return
 
     def training_step(self, batch, batch_idx):
@@ -95,7 +99,7 @@ class ModelModule(LightningModule):
 
     def _step(self, batch, batch_idx, step_type):
         # print(batch["inputs"].shape)
-        loss, loss_ctc, loss_att, acc = self.model(batch["inputs"], batch["input_lengths"], batch["targets"])
+        loss, loss_ctc, loss_att, acc = self.model(batch["inputs"], batch["input_lengths"], batch["targets"].long())
         batch_size = len(batch["inputs"])
 
         if step_type == "train":
@@ -118,7 +122,7 @@ class ModelModule(LightningModule):
         self.total_length = 0
         self.total_edit_distance = 0
         self.text_transform = TextTransform()
-        self.beam_search = get_beam_search_decoder(self.model, self.token_list)
+        self.beam_search = get_beam_search_decoder(self.model, self.token_list,beam_size=1)
 
     def on_test_epoch_end(self):
         self.log("wer", self.total_edit_distance / self.total_length)

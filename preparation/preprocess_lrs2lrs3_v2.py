@@ -1,196 +1,316 @@
-import os
-import ffmpeg
+import argparse
+import glob
 import math
+import os
 import pickle
 import shutil
 import warnings
-from tqdm import tqdm
 
-# Import your own modules 
-# pip install --upgrade av==9.2.0
+import ffmpeg
 from data.data_module import AVSRDataLoader
+from tqdm import tqdm
 from transforms import TextTransform
-from utils import save_vid_aud_txt, split_file
+from utils2 import save_vid_aud_txt, split_file
 
 warnings.filterwarnings("ignore")
 
-def load_landmarks(landmark_path):
-    """
-    Helper function to load landmarks if provided.
-    Returns:
-        landmarks or None
-    """
-    if landmark_path and os.path.exists(landmark_path):
-        with open(landmark_path, "rb") as fp:
-            return pickle.load(fp)
-    return None
+# Argument Parsing
+parser = argparse.ArgumentParser(description="LRS2LRS3 Preprocessing")
+parser.add_argument(
+    "--data-dir",
+    type=str,
+    required=True,
+    help="Directory of original dataset",
+)
+parser.add_argument(
+    "--detector",
+    type=str,
+    default="retinaface",
+    help="Type of face detector. (Default: retinaface)",
+)
+parser.add_argument(
+    "--landmarks-dir",
+    type=str,
+    default=None,
+    help="Directory of landmarks",
+)
+parser.add_argument(
+    "--root-dir",
+    type=str,
+    required=True,
+    help="Root directory of preprocessed dataset",
+)
+parser.add_argument(
+    "--subset",
+    type=str,
+    required=True,
+    help="Subset of dataset",
+)
+parser.add_argument(
+    "--dataset",
+    type=str,
+    required=True,
+    help="Name of dataset",
+)
+parser.add_argument(
+    "--gpu_type",
+    type=str,
+    default="cuda",
+    help="GPU type, either mps or cuda. (Default: cuda)",
+)
+parser.add_argument(
+    "--seg-duration",
+    type=int,
+    default=16,
+    help="Max duration (second) for each segment, (Default: 16)",
+)
+parser.add_argument(
+    "--combine-av",
+    type=lambda x: (str(x).lower() == "true"),
+    default=False,
+    help="Merges the audio and video components to a media file.",
+)
+parser.add_argument(
+    "--groups",
+    type=int,
+    default=1,
+    help="Number of threads to be used in parallel.",
+)
+parser.add_argument(
+    "--job-index",
+    type=int,
+    default=0,
+    help="Index to identify separate jobs (useful for parallel processing).",
+)
+args = parser.parse_args()
 
-def create_directories(export_path):
-    """
-    Helper to create directories for videos and text files in the export path.
-    """
-    video_dir = os.path.join(export_path, "videos")
-    text_dir = os.path.join(export_path, "texts")
-    if not os.path.exists(video_dir):
-        os.makedirs(video_dir)
-    if not os.path.exists(text_dir):
-        os.makedirs(text_dir)
-    return video_dir, text_dir
+seg_duration = args.seg_duration
+dataset = args.dataset
+text_transform = TextTransform()
 
-def split_video_audio(video_data, audio_data, seg_duration, fps, sr):
-    """
-    (Optional) Helper to split video/audio into chunks of seg_duration seconds.
-    If you have precise alignments for text, you can adapt that logic here.
-    
-    This returns a list of (video_chunk, audio_chunk, index) tuples.
-    """
-    seg_frames = seg_duration * fps
-    seg_samples = seg_duration * sr
+# Load Data
+args.data_dir = os.path.normpath(args.data_dir)
+print(args.gpu_type)
+vid_dataloader = AVSRDataLoader(
+    modality="video", detector=args.detector, convert_gray=False, gpu_type=args.gpu_type
+)
 
-    total_frames = len(video_data)
-    total_samples = audio_data.size(1) if audio_data.ndim > 1 else len(audio_data)
+seg_vid_len = seg_duration * 25
+seg_aud_len = seg_duration * 16000
 
-    # Number of segments needed to cover all frames
-    num_segs = math.ceil(total_frames / seg_frames)
+# Label filename
+label_filename = os.path.join(
+    args.root_dir,
+    "labels",
+    f"{dataset}_{args.subset}_transcript_lengths_seg{seg_duration}s.csv"
+    if args.groups <= 1
+    else f"{dataset}_{args.subset}_transcript_lengths_seg{seg_duration}s.{args.groups}.{args.job_index}.csv",
+)
+os.makedirs(os.path.dirname(label_filename), exist_ok=True)
+print(f"Directory {os.path.dirname(label_filename)} created")
 
-    segments = []
-    for i in range(num_segs):
-        start_frame = i * seg_frames
-        end_frame   = min((i+1) * seg_frames, total_frames)
-
-        start_sample = i * seg_samples
-        end_sample   = min((i+1) * seg_samples, total_samples)
-
-        vid_chunk = video_data[start_frame:end_frame]
-        aud_chunk = audio_data[:, start_sample:end_sample]
-
-        segments.append((vid_chunk, aud_chunk, i))
-    return segments
-
-def process_videos(
-    meta,
-    export_path,
-    seg_duration=16,
-    fps=25,
-    sr=16000,
-    combine_av=False,
-    split_long_videos=False
-):
-    """
-    Processes a list of video entries and saves them in export_path.
-
-    meta: list of dictionaries, each with keys:
-        - 'video_path': path to the video file (required)
-        - 'text': text for the entire video (required if you want transcript)
-        - 'landmark_path': path to landmark file (optional)
-    export_path: directory where outputs will be saved
-    seg_duration: how many seconds each segment can be (default=16s)
-    fps: frames per second for the video
-    sr: sample rate for audio
-    combine_av: whether to combine audio and video into a single MP4 (with audio track)
-    split_long_videos: if True, splits the video/audio into multiple segments if they exceed seg_duration
-    """
-    # Instantiate your data loaders as needed
-    vid_dataloader = AVSRDataLoader(modality="video", detector="retinaface", convert_gray=False, gpu_type="cuda")
-    aud_dataloader = AVSRDataLoader(modality="audio")
-
-    # Instantiate your text transform
-    text_transform = TextTransform()
-
-    # Create directories for saving outputs
-    video_dir, text_dir = create_directories(export_path)
-
-    # CSV-like manifest (optional): track everything you save
-    manifest_path = os.path.join(export_path, "metadata.csv")
-    f = open(manifest_path, "w")
-    # Write a header (optional)
-    f.write("video_filename,frames,token_ids\n")
-
-    for item in tqdm(meta, desc="Processing videos"):
-        video_path = item["video_path"]
-        text_line  = item.get("text", "")
-        landmark_path = item.get("landmark_path", None)
-
-        # Load landmarks if given
-        landmarks = load_landmarks(landmark_path)
-
-        # Load video data / audio data
-        try:
-            video_data = vid_dataloader.load_data(video_path, landmarks)
-            audio_data = aud_dataloader.load_data(video_path)
-        except (UnboundLocalError, TypeError, OverflowError, AssertionError) as e:
-            print(f"Skipping {video_path} due to load error: {e}")
-            continue
-
-        # If no data, skip
-        if video_data is None or audio_data is None:
-            continue
-
-        # Decide how to handle splitting
-        if split_long_videos:
-            segments = split_video_audio(video_data, audio_data, seg_duration, fps, sr)
-        else:
-            segments = [(video_data, audio_data, None)]
-
-        # Process each segment
-        for seg_idx, (vid_chunk, aud_chunk, idx) in enumerate(segments):
-            if vid_chunk is None or aud_chunk is None:
-                continue
-            if len(vid_chunk) == 0 or aud_chunk.size(1) == 0:
-                continue
-
-            # Build filenames
-            base_name = os.path.splitext(os.path.basename(video_path))[0]
-            if idx is not None:
-                # e.g. <originalname>_00.mp4, ...
-                vid_filename = f"{base_name}_{idx:02d}.mp4"
-                aud_filename = f"{base_name}_{idx:02d}.wav"
-                txt_filename = f"{base_name}_{idx:02d}.txt"
-            else:
-                vid_filename = f"{base_name}.mp4"
-                aud_filename = f"{base_name}.wav"
-                txt_filename = f"{base_name}.txt"
-
-            out_vid_path = os.path.join(video_dir, vid_filename)
-            out_aud_path = os.path.join(video_dir, aud_filename)
-            out_txt_path = os.path.join(text_dir, txt_filename)
-
-            # Save video/audio/text
-            save_vid_aud_txt(
-                out_vid_path,
-                out_aud_path,
-                out_txt_path,
-                vid_chunk,
-                aud_chunk,
-                text_line,
-                video_fps=fps,
-                audio_sample_rate=sr
+f = open(label_filename, "w")
+# Step 2, extract mouth patches from segments.
+dst_vid_dir = os.path.join(
+    args.root_dir, dataset, dataset + f"_video_seg{seg_duration}s"
+)
+dst_txt_dir = os.path.join(
+    args.root_dir, dataset, dataset + f"_text_seg{seg_duration}s"
+)
+if dataset == "lrs3":
+    if args.subset == "test":
+        filenames = glob.glob(
+            os.path.join(args.data_dir, args.subset, "**", "*.mp4"), recursive=True
+        )
+    elif args.subset == "train":
+        filenames = glob.glob(
+            os.path.join(args.data_dir, "trainval", "**", "*.mp4"), recursive=True
+        )
+        filenames.extend(
+            glob.glob(
+                os.path.join(args.data_dir, "pretrain", "**", "*.mp4"), recursive=True
             )
+        )
+        filenames.sort()
+    else:
+        raise NotImplementedError
+elif dataset == "lrs2":
+    if args.subset in ["val", "test"]:
+        filenames = [
+            os.path.join(args.data_dir, "main", _.split()[0] + ".mp4")
+            for _ in open(
+                os.path.join(os.path.dirname(args.data_dir), args.subset) + ".txt"
+            )
+            .read()
+            .splitlines()
+        ]
+    elif args.subset == "train":
+        filenames = [
+            os.path.join(args.data_dir, "main", _.split()[0] + ".mp4")
+            for _ in open(
+                os.path.join(os.path.dirname(args.data_dir), args.subset) + ".txt"
+            )
+            .read()
+            .splitlines()
+        ]
+        pretrain_filenames = [
+            os.path.join(args.data_dir, "pretrain", _.split()[0] + ".mp4")
+            for _ in open(os.path.join(os.path.dirname(args.data_dir), "pretrain.txt"))
+            .read()
+            .splitlines()
+        ]
+        filenames.extend(pretrain_filenames)
+        filenames.sort()
+    else:
+        raise NotImplementedError
 
-            # Optionally combine audio and video
-            if combine_av:
-                in_vid = ffmpeg.input(out_vid_path)
-                in_aud = ffmpeg.input(out_aud_path)
-                out = ffmpeg.output(
-                    in_vid["v"],
-                    in_aud["a"],
-                    out_vid_path[:-4] + ".av.mp4",
-                    vcodec="copy",
-                    acodec="aac",
-                    strict="experimental",
-                    loglevel="panic",
+unit = math.ceil(len(filenames) * 1.0 / args.groups)
+filenames = filenames[args.job_index * unit : (args.job_index + 1) * unit]
+
+for data_filename in tqdm(filenames):
+    if args.landmarks_dir:
+        landmarks_filename = (
+            data_filename.replace(args.data_dir, args.landmarks_dir)[:-4] + ".pkl"
+        )
+        landmarks = pickle.load(open(landmarks_filename, "rb"))
+    else:
+        landmarks = None
+    try:
+        video_data = vid_dataloader.load_data(data_filename, landmarks)
+    except (UnboundLocalError, TypeError, OverflowError, AssertionError):
+        continue
+
+    if os.path.normpath(data_filename).split(os.sep)[-3] in [
+        "trainval",
+        "test",
+        "main",
+    ]:
+        dst_vid_filename = (
+            f"{data_filename.replace(args.data_dir, dst_vid_dir)[:-4]}.mp4"
+        )
+        dst_aud_filename = (
+            f"{data_filename.replace(args.data_dir, dst_vid_dir)[:-4]}.wav"
+        )
+        dst_txt_filename = (
+            f"{data_filename.replace(args.data_dir, dst_txt_dir)[:-4]}.txt"
+        )
+        trim_vid_data = video_data
+        text_line_list = (
+            open(data_filename[:-4] + ".txt", "r").read().splitlines()[0].split(" ")
+        )
+        text_line = " ".join(text_line_list[2:])
+        content = text_line.replace("}", "").replace("{", "")
+
+        if trim_vid_data is None:
+            continue
+        video_length = len(trim_vid_data)
+        if video_length == 0:
+            continue
+        # if audio_length/video_length < 560. or audio_length/video_length > 720. or video_length < 12:
+        #    continue
+        save_vid_aud_txt(
+            dst_vid_filename,
+            dst_aud_filename,
+            dst_txt_filename,
+            trim_vid_data,
+            content,
+            video_fps=25,
+            audio_sample_rate=16000,
+        )
+
+        if args.combine_av:
+            in1 = ffmpeg.input(dst_vid_filename)
+            in2 = ffmpeg.input(dst_aud_filename)
+            out = ffmpeg.output(
+                in1["v"],
+                in2["a"],
+                dst_vid_filename[:-4] + ".av.mp4",
+                vcodec="copy",
+                acodec="aac",
+                strict="experimental",
+                loglevel="panic",
+            )
+            out.run()
+            shutil.move(dst_vid_filename[:-4] + ".av.mp4", dst_vid_filename)
+
+        basename = os.path.relpath(
+            dst_vid_filename, start=os.path.join(args.root_dir, dataset)
+        )
+        token_id_str = " ".join(
+            map(str, [_.item() for _ in text_transform.tokenize(content)])
+        )
+        f.write(
+            "{}\n".format(
+                f"{dataset},{basename},{trim_vid_data.shape[0]},{token_id_str}"
+            )
+        )
+        continue
+
+    splitted = split_file(data_filename[:-4] + ".txt", max_frames=seg_vid_len)
+    for i in range(len(splitted)):
+        if len(splitted) == 1:
+            content, start, end, duration = splitted[i]
+            trim_vid_data = video_data, 
+        else:
+            content, start, end, duration = splitted[i]
+            start_idx, end_idx = int(start * 25), int(end * 25)
+            try:
+                trim_vid_data  = (
+                    video_data[start_idx:end_idx],
                 )
-                out.run()
-                # Move the .av.mp4 to replace the original .mp4
-                shutil.move(out_vid_path[:-4] + ".av.mp4", out_vid_path)
+            except TypeError:
+                continue
+        dst_vid_filename = (
+            f"{data_filename.replace(args.data_dir, dst_vid_dir)[:-4]}_{i:02d}.mp4"
+        )
+        dst_aud_filename = (
+            f"{data_filename.replace(args.data_dir, dst_vid_dir)[:-4]}_{i:02d}.wav"
+        )
+        dst_txt_filename = (
+            f"{data_filename.replace(args.data_dir, dst_txt_dir)[:-4]}_{i:02d}.txt"
+        )
 
-            # Prepare data for CSV logging
-            frames_count = vid_chunk.shape[0]
-            token_ids = text_transform.tokenize(text_line)
-            token_str = " ".join(str(t.item()) for t in token_ids)
+        if trim_vid_data is None:
+            continue
+        video_length = len(trim_vid_data)
+        if video_length == 0 :
+            continue
+        save_vid_aud_txt(
+            dst_vid_filename,
+            dst_aud_filename,
+            dst_txt_filename,
+            trim_vid_data,
+            content,
+            video_fps=25,
+            audio_sample_rate=16000,
+        )
 
-            # Write to the manifest file
-            f.write(f"{vid_filename},{frames_count},{token_str}\n")
+        if args.combine_av:
+            in1 = ffmpeg.input(dst_vid_filename)
+            in2 = ffmpeg.input(dst_aud_filename)
+            out = ffmpeg.output(
+                in1["v"],
+                in2["a"],
+                dst_vid_filename[:-4] + ".av.mp4",
+                vcodec="copy",
+                acodec="aac",
+                strict="experimental",
+                loglevel="panic",
+            )
+            out.run()
+            os.remove(dst_aud_filename)
+            shutil.move(dst_vid_filename[:-4] + ".av.mp4", dst_vid_filename)
 
-    f.close()
-    print(f"Finished processing. Manifest written to {manifest_path}")
+        basename = os.path.relpath(
+            dst_vid_filename, start=os.path.join(args.root_dir, dataset)
+        )
+        token_id_str = " ".join(
+            map(str, [_.item() for _ in text_transform.tokenize(content)])
+        )
+        if token_id_str:
+            f.write(
+                "{}\n".format(
+                    f"{dataset},{basename},{trim_vid_data.shape[0]},{token_id_str}"
+                )
+            )
+f.close()

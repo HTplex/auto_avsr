@@ -1,7 +1,0 @@
-{"time":"2025-01-20T06:50:32.895399651+08:00","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"wandb/run-20250120_065032-kxlfvljm/logs/debug-core.log"}
-{"time":"2025-01-20T06:50:33.015730155+08:00","level":"INFO","msg":"created new stream","id":"kxlfvljm"}
-{"time":"2025-01-20T06:50:33.015849241+08:00","level":"INFO","msg":"stream: started","id":"kxlfvljm"}
-{"time":"2025-01-20T06:50:33.015890586+08:00","level":"INFO","msg":"sender: started","stream_id":"kxlfvljm"}
-{"time":"2025-01-20T06:50:33.015889775+08:00","level":"INFO","msg":"handler: started","stream_id":"kxlfvljm"}
-{"time":"2025-01-20T06:50:33.015891019+08:00","level":"INFO","msg":"writer: Do: started","stream_id":"kxlfvljm"}
-{"time":"2025-01-20T06:50:34.043407017+08:00","level":"INFO","msg":"Starting system monitor"}
